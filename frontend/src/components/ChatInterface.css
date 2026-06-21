@@ -167,6 +167,52 @@
   font-style: italic;
   color: var(--ink-faint);
 }
+
+.deliberation-hint {
+  margin-top: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  background: var(--paper-beige);
+  border-radius: var(--radius-sm);
+}
+
+.example-prompts {
+  margin-top: 22px;
+  text-align: left;
+  background: var(--paper-card);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.example-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+  margin-bottom: 10px;
+}
+
+.example-prompts ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.example-prompts li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.example-prompts li::marker { color: var(--sage-deep); }
 .msg-note.error { color: #a85440; font-style: normal; }
 
 /* ----- Inline edit box ----- */

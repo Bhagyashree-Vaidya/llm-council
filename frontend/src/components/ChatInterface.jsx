@@ -88,7 +88,15 @@ export default function ChatInterface({
         {messages.length === 0 ? (
           <div className="empty-state">
             <h2>What are you deciding?</h2>
-            <p>Describe the decision you're weighing. The Contrarian, the First Principles Thinker, the Expansionist, the Outsider, and the Skeptic will each weigh in, then the Courtroom synthesizes a balanced view.</p>
+            <p>Describe a decision you're weighing. Five thinkers each react, rank each other, then the Courtroom gives a balanced view. A full deliberation takes about a minute.</p>
+            <div className="example-prompts">
+              <span className="example-label">Try something like:</span>
+              <ul>
+                <li>"Should I take the stable corporate PM job or join an early-stage startup?"</li>
+                <li>"Should I rewrite my LinkedIn headline to lead with outcomes, or keep it role-based? Here's my current one: ..."</li>
+                <li>"Should I learn Rust or Go next?"</li>
+              </ul>
+            </div>
           </div>
         ) : (
           messages.map((msg, index) => (
@@ -142,7 +150,7 @@ export default function ChatInterface({
                   {msg.loading?.stage1 && (
                     <div className="stage-loading">
                       <div className="spinner"></div>
-                      <span>The five thinkers are weighing in...</span>
+                      <span>Step 1 of 3 &middot; The five thinkers are weighing in...</span>
                     </div>
                   )}
                   {msg.stage1 && <Stage1 responses={msg.stage1} />}
@@ -150,7 +158,7 @@ export default function ChatInterface({
                   {msg.loading?.stage2 && (
                     <div className="stage-loading">
                       <div className="spinner"></div>
-                      <span>The thinkers are ranking each other's takes...</span>
+                      <span>Step 2 of 3 &middot; The thinkers are ranking each other's takes...</span>
                     </div>
                   )}
                   {msg.stage2 && (
@@ -164,10 +172,18 @@ export default function ChatInterface({
                   {msg.loading?.stage3 && (
                     <div className="stage-loading">
                       <div className="spinner"></div>
-                      <span>The Courtroom is reaching a verdict...</span>
+                      <span>Step 3 of 3 &middot; The Courtroom is reaching a verdict...</span>
                     </div>
                   )}
                   {msg.stage3 && <Stage3 finalResponse={msg.stage3} />}
+
+                  {(msg.loading?.stage1 || msg.loading?.stage2 || msg.loading?.stage3) && (
+                    <div className="deliberation-hint">
+                      Five AI models are deliberating in parallel. A full verdict
+                      usually takes about a minute, and each step appears as it
+                      finishes.
+                    </div>
+                  )}
 
                   {msg.stopped && !msg.stage3 && (
                     <div className="msg-note">Stopped. You can regenerate when ready.</div>
