@@ -10,7 +10,6 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // three.js is heavy; only pull it in when the locked landing actually shows.
 const AnyaPeek = lazy(() => import('./AnyaPeek'));
-const AnyaCard = lazy(() => import('./AnyaCard'));
 
 const THINKERS = [
   {
@@ -151,7 +150,6 @@ export default function PasswordGate({ children }) {
   const [mood, setMood] = useState('neutral'); // neutral | shocked | happy
   const [shake, setShake] = useState(false);
   const [modelFailed, setModelFailed] = useState(false);
-  const [showGifs, setShowGifs] = useState(false);
   const [policyOpen, setPolicyOpen] = useState(false); // terms & privacy modal
   const lookTargetRef = useRef(null); // {x, y} the character looks at
   const typingRef = useRef(false); // true while the password field is focused
@@ -171,40 +169,7 @@ export default function PasswordGate({ children }) {
       .then((ok) => setStatus(ok ? 'open' : 'locked'))
       .catch(() => setStatus('locked'));
 
-    // Delay GIFs so they don't loop immediately on load
-    const timer = setTimeout(() => setShowGifs(true), 1500);
-    return () => clearTimeout(timer);
   }, []);
-
-  // Persona pose snapshots for the thinker cards (rendered from the GLB once).
-  const [poses, setPoses] = useState(null);
-  useEffect(() => {
-    if (status !== 'locked') return;
-    import('../anyaPoses')
-      .then((m) => m.generatePoseImages())
-      .then((imgs) => {
-        setPoses(imgs);
-        // Swap the static SVG favicon for a real rendered Anya headshot.
-        try {
-          const img = new Image();
-          img.onload = () => {
-            const c = document.createElement('canvas');
-            c.width = 64;
-            c.height = 64;
-            const ctx = c.getContext('2d');
-            const s = Math.min(img.width, img.height);
-            ctx.drawImage(img, (img.width - s) / 2, 0, s, s, 0, 0, 64, 64);
-            const link = document.querySelector("link[rel='icon']");
-            if (link) {
-              link.type = 'image/png';
-              link.href = c.toDataURL('image/png');
-            }
-          };
-          img.src = imgs.skeptic;
-        } catch { /* favicon swap is best-effort */ }
-      })
-      .catch(() => setPoses(null)); // cards just render without images
-  }, [status]);
 
   // ---------- Eye tracking ----------
   const lookAt = useCallback((x, y) => {
@@ -419,16 +384,6 @@ export default function PasswordGate({ children }) {
           {THINKERS.map((t, i) => (
             <article className={`thinker-card overflow-${t.overflow}`} key={t.key}>
               <span className="thinker-num">{String(i + 1).padStart(2, '0')}</span>
-              <div className="thinker-pose">
-                <img
-                  src={
-                    t.key === 'expansionist' || t.key === 'contrarian'
-                      ? (showGifs ? `/${t.key}.gif` : `/${t.key}.png`)
-                      : `/${t.key}.png`
-                  }
-                  alt={t.name}
-                />
-              </div>
               <h3>{t.name}</h3>
               <p>{t.line}</p>
             </article>
